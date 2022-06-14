@@ -6,3 +6,49 @@ services:
     build:
       context: .
       dockerfile: SetupApplication/Dockerfile
+    ports: 
+    - "8080:80"
+    - "8081:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "8091"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+
+  examplea:
+    image: ${DOCKER_REGISTRY-}examplea
+    build:
+      context: .
+      dockerfile: ExampleA/Dockerfile
+    ports: 
+    - "8090:80"
+    - "8091:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "8091"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+
+  ms-sql-server:
+    container_name: setupDataBase
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password1!"
+      MSSQL_PID: Express
+    ports:
+    - "1433:1433"
+
+  exampleadb:
+    container_name: exampleADb
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password1!"
+      MSSQL_PID: Express
+    ports:
+    - "1533:1533"
